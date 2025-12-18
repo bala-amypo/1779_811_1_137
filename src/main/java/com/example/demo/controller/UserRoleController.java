@@ -19,16 +19,6 @@ public class UserRoleController {
         return roleService.createRole(role);
     }
 
-    @GetMapping
-    public List<UserRoleEntity> getAllRoles() {
-        return roleService.getAllRoles();
-    }
-
-    @GetMapping("/{id}")
-    public UserRoleEntity getRoleById(@PathVariable Long id) {
-        return roleService.getRoleById(id);
-    }
-
     @PutMapping("/{id}")
     public UserRoleEntity updateRole(
             @PathVariable Long id,
@@ -36,9 +26,18 @@ public class UserRoleController {
         return roleService.updateRole(id, role);
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteRole(@PathVariable Long id) {
-        roleService.deleteRole(id);
-        return "Role deleted successfully";
+    @GetMapping("/{id}")
+    public UserRoleEntity getRoleById(@PathVariable Long id) {
+        return roleService.getRoleById(id);
+    }
+
+    @GetMapping
+    public List<UserRoleEntity> getAllRoles() {
+        return roleService.getAllRoles();
+    }
+
+    @PutMapping("/{id}/deactivate")
+    public UserRoleEntity deactivateRole(@PathVariable Long id) {
+        return roleService.deactivateRole(id);
     }
 }
