@@ -1,52 +1,65 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-// import jakarta.persistence.GeneratedValue;
-// import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "roles", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "roleName")
+})
 public class UserRoleEntity {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique=true)
+
+    @Column(nullable = false, unique = true)
     private String roleName;
+
     private String description;
-    private boolean active=true;
 
-    public UserRoleEntity(Long id,String roleName, String description, boolean active) {
-        this.name = name;
-        this.email = email;
-        this.cgpa = cgpa;
-    }
+    private Boolean active = true;
 
+    // ✅ No-args constructor (required by JPA)
     public UserRoleEntity() {
-        
     }
 
-    public void setName(String name) {
-        this.name = name;
+    // ✅ Parameterized constructor
+    public UserRoleEntity(String roleName, String description, Boolean active) {
+        this.roleName = roleName;
+        this.description = description;
+        this.active = active;
     }
 
-    public String getName() {
-        return this.name;
+    // ✅ Getters and Setters
+    public Long getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getEmail() {
-        return this.email;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setCgpa(float cgpa) {
-        this.cgpa = cgpa;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
-    public float getCgpa() {
-        return this.cgpa;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
