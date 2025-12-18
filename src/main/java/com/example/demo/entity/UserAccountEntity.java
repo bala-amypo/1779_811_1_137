@@ -1,21 +1,20 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+// import jakarta.persistence.GeneratedValue;
+// import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class StudentEntity {
+public class UserAccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique=true)
     private String email;
-    
     private String fullName;
-    private float cgpa;
+    private boolean active=true;
 
     public StudentEntity(Long id,String name, String email, float cgpa) {
         this.name = name;
