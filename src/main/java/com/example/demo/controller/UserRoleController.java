@@ -20,9 +20,7 @@ public class UserRoleController {
     }
 
     @PutMapping("/{id}")
-    public UserRoleEntity updateRole(
-            @PathVariable Long id,
-            @RequestBody UserRoleEntity role) {
+    public UserRoleEntity updateRole(@PathVariable Long id,@RequestBody UserRoleEntity role) {
         return roleService.updateRole(id, role);
     }
 
