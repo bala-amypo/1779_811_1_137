@@ -12,25 +12,23 @@ public class UserRoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String roleName;
 
     private String description;
 
     private Boolean active = true;
 
-    // ✅ No-args constructor (required by JPA)
     public UserRoleEntity() {
+        
     }
 
-    // ✅ Parameterized constructor
     public UserRoleEntity(String roleName, String description, Boolean active) {
         this.roleName = roleName;
         this.description = description;
         this.active = active;
     }
 
-    // ✅ Getters and Setters
     public Long getId() {
         return id;
     }
