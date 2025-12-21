@@ -1,49 +1,43 @@
 package com.example.demo.controller;
 
 import java.util.List;
-
 import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.entity.RoleEntity;
 import com.example.demo.service.RoleService;
 
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping("/roles")
 public class RoleController {
 
-    private final RoleService roleService;
+    private final RoleService service;
 
-    public RoleController(RoleService roleService) {
-        this.roleService = roleService;
+    public RoleController(RoleService service) {
+        this.service = service;
     }
 
-    // POST /api/roles
     @PostMapping
-    public RoleEntity createRole(@RequestBody RoleEntity role) {
-        return roleService.createRole(role);
+    public RoleEntity create(@RequestBody RoleEntity role) {
+        return service.create(role);
     }
 
-    // PUT /api/roles/{id}
-    @PutMapping("/{id}")
-    public RoleEntity updateRole(@PathVariable Long id, @RequestBody RoleEntity role) {
-        return roleService.updateRole(id, role);
-    }
-
-    // GET /api/roles/{id}
-    @GetMapping("/{id}")
-    public RoleEntity getRole(@PathVariable Long id) {
-        return roleService.getRoleById(id);
-    }
-
-    // GET /api/roles
     @GetMapping
-    public List<RoleEntity> getAllRoles() {
-        return roleService.getAllRoles();
+    public List<RoleEntity> getAll() {
+        return service.getAll();
     }
 
-    // PUT /api/roles/{id}/deactivate
-    @PutMapping("/{id}/deactivate")
-    public void deactivateRole(@PathVariable Long id) {
-        roleService.deactivateRole(id);
+    @GetMapping("/{id}")
+    public RoleEntity getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public RoleEntity update(@PathVariable Long id,
+                             @RequestBody RoleEntity role) {
+        return service.update(id, role);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }
