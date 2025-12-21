@@ -1,5 +1,6 @@
 package com.example.demo.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,11 +23,20 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    // 🔥 THIS IS THE MISSING PART
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateKey(DataIntegrityViolationException ex) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                "Email already exists"
+        );
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleOtherExceptions(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleOther(Exception ex) {
         return buildResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Email already exist"
+                "Something went wrong"
         );
     }
 
