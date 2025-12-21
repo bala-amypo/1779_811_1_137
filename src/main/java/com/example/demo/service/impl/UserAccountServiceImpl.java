@@ -1,48 +1,55 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
-
-import com.example.demo.entity.UserAccountEntity;
+import com.example.demo.entity.UserAccount;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
 
-    private final UserAccountRepository repo;
+    private final UserAccountRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserAccountServiceImpl(UserAccountRepository repo) {
-        this.repo = repo;
+    public UserAccountServiceImpl(UserAccountRepository repository,
+                                  PasswordEncoder passwordEncoder) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserAccountEntity create(UserAccountEntity user) {
-        return repo.save(user);
+    public UserAccount create(UserAccount user) {
+        if (repository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return repository.save(user);
     }
 
     @Override
-    public UserAccountEntity update(Long id, UserAccountEntity user) {
-        UserAccountEntity existing = getById(id);
-        existing.setFullName(user.getFullName());
-        existing.setEmail(user.getEmail());
-        return repo.save(existing);
+    public UserAccount get(Long id) {
+        return repository.findById(id).orElseThrow();
     }
 
     @Override
-    public UserAccountEntity getById(Long id) {
-        return repo.findById(id).orElseThrow();
+    public List<UserAccount> all() {
+        return repository.findAll();
     }
 
     @Override
-    public List<UserAccountEntity> getAllActive() {
-        return repo.findByActiveTrue();
+    public UserAccount update(Long id, UserAccount user) {
+        UserAccount db = get(id);
+        db.setFullName(user.getFullName());
+        return repository.save(db);
     }
 
     @Override
     public void deactivate(Long id) {
-        UserAccountEntity user = getById(id);
-        user.setActive(false);
-        repo.save(user);
+        UserAccount db = get(id);
+        db.setActive(false);
+        repository.save(db);
     }
 }
