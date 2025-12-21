@@ -15,7 +15,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserAccountServiceImpl(UserAccountRepository repository) {
         this.repository = repository;
     }
-
+    
     @Override
     public UserAccount create(UserAccount user) {
         if (repository.existsByEmail(user.getEmail())) {
