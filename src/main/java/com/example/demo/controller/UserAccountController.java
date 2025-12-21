@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.entity.UserAccountEntity;
 import com.example.demo.service.UserAccountService;
 
@@ -20,9 +21,10 @@ public class UserAccountController {
         return service.create(user);
     }
 
-    @GetMapping
-    public List<UserAccountEntity> getAll() {
-        return service.getAll();
+    @PutMapping("/{id}")
+    public UserAccountEntity update(@PathVariable Long id,
+                                    @RequestBody UserAccountEntity user) {
+        return service.update(id, user);
     }
 
     @GetMapping("/{id}")
@@ -30,14 +32,15 @@ public class UserAccountController {
         return service.getById(id);
     }
 
-    @PutMapping("/{id}")
-    public UserAccountEntity update(@PathVariable Long id,
-                                    @RequestBody UserAccountEntity user) {
-        return service.update(id, user);
+    // ✅ Only ACTIVE users
+    @GetMapping
+    public List<UserAccountEntity> getAllActive() {
+        return service.getAllActive();
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    // ✅ DEACTIVATE (NOT DELETE)
+    @PutMapping("/{id}/deactivate")
+    public void deactivate(@PathVariable Long id) {
+        service.deactivate(id);
     }
 }

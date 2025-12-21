@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+
 import com.example.demo.entity.UserAccountEntity;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
@@ -15,27 +16,33 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.repo = repo;
     }
 
+    @Override
     public UserAccountEntity create(UserAccountEntity user) {
         return repo.save(user);
     }
 
-    public List<UserAccountEntity> getAll() {
-        return repo.findAll();
+    @Override
+    public UserAccountEntity update(Long id, UserAccountEntity user) {
+        UserAccountEntity existing = getById(id);
+        existing.setFullName(user.getFullName());
+        existing.setEmail(user.getEmail());
+        return repo.save(existing);
     }
 
+    @Override
     public UserAccountEntity getById(Long id) {
         return repo.findById(id).orElseThrow();
     }
 
-    public UserAccountEntity update(Long id, UserAccountEntity user) {
-        UserAccountEntity u = getById(id);
-        u.setFullName(user.getFullName());
-        u.setEmail(user.getEmail());
-        u.setActive(user.getActive());
-        return repo.save(u);
+    @Override
+    public List<UserAccountEntity> getAllActive() {
+        return repo.findByActiveTrue();
     }
 
-    public void delete(Long id) {
-        repo.deleteById(id);
+    @Override
+    public void deactivate(Long id) {
+        UserAccountEntity user = getById(id);
+        user.setActive(false);
+        repo.save(user);
     }
 }

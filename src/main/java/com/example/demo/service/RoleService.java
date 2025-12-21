@@ -6,8 +6,12 @@ import com.example.demo.entity.RoleEntity;
 public interface RoleService {
 
     RoleEntity create(RoleEntity role);
-    List<RoleEntity> getAll();
-    RoleEntity getById(Long id);
+
     RoleEntity update(Long id, RoleEntity role);
-    void delete(Long id);
+
+    RoleEntity getById(Long id);
+
+    List<RoleEntity> getAllActive();
+
+    void deactivate(Long id);
 }
