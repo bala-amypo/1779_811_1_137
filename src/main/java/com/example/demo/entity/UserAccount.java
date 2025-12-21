@@ -49,7 +49,6 @@ public class UserAccount {
         updatedAt = Instant.now();
     }
 
-    // getters
     public Long getId() { return id; }
     public String getEmail() { return email; }
     public String getFullName() { return fullName; }
@@ -58,7 +57,6 @@ public class UserAccount {
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 
-    // setters
     public void setId(Long id) { this.id = id; }
     public void setEmail(String email) { this.email = email; }
     public void setFullName(String fullName) { this.fullName = fullName; }
