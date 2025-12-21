@@ -1,11 +1,13 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "roles", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "roleName")
-})
+@Table(name = "roles")
 public class RoleEntity {
 
     @Id
@@ -13,20 +15,29 @@ public class RoleEntity {
     private Long id;
 
     private String roleName;
+    private Boolean active = true;
 
-    private String description;
+    public Long getId() {
+        return id;
+    }
 
-    private boolean active = true;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    // getters & setters
-    public Long getId() { return id; }
+    public String getRoleName() {
+        return roleName;
+    }
 
-    public String getRoleName() { return roleName; }
-    public void setRoleName(String roleName) { this.roleName = roleName; }
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public Boolean getActive() {
+        return active;
+    }
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }
