@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
-import java.util.List;
+import com.example.demo.entity.UserAccount;
+import com.example.demo.service.UserAccountService;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.entity.UserAccountEntity;
-import com.example.demo.service.UserAccountService;
+import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserAccountController {
 
     private final UserAccountService service;
@@ -17,28 +17,26 @@ public class UserAccountController {
     }
 
     @PostMapping
-    public UserAccountEntity create(@RequestBody UserAccountEntity user) {
+    public UserAccount create(@RequestBody UserAccount user) {
         return service.create(user);
     }
 
+    @GetMapping("/{id}")
+    public UserAccount get(@PathVariable Long id) {
+        return service.get(id);
+    }
+
+    @GetMapping
+    public List<UserAccount> all() {
+        return service.all();
+    }
+
     @PutMapping("/{id}")
-    public UserAccountEntity update(@PathVariable Long id,
-                                    @RequestBody UserAccountEntity user) {
+    public UserAccount update(@PathVariable Long id,
+                              @RequestBody UserAccount user) {
         return service.update(id, user);
     }
 
-    @GetMapping("/{id}")
-    public UserAccountEntity getById(@PathVariable Long id) {
-        return service.getById(id);
-    }
-
-    // ✅ Only ACTIVE users
-    @GetMapping
-    public List<UserAccountEntity> getAllActive() {
-        return service.getAllActive();
-    }
-
-    // ✅ DEACTIVATE (NOT DELETE)
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
         service.deactivate(id);
