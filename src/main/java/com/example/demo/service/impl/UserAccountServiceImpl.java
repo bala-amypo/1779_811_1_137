@@ -21,7 +21,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (repository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
-        // NO password encoding
         return repository.save(user);
     }
 
