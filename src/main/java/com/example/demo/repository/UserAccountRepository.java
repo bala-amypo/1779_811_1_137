@@ -1,12 +1,13 @@
 package com.example.demo.repository;
 
-import java.util.List;
+import com.example.demo.entity.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.demo.entity.UserAccountEntity;
 
-public interface UserAccountRepository
-        extends JpaRepository<UserAccountEntity, Long> {
+import java.util.Optional;
 
-    // only active users
-    List<UserAccountEntity> findByActiveTrue();
+public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
+
+    boolean existsByEmail(String email);
+
+    Optional<UserAccount> findByEmail(String email);
 }
