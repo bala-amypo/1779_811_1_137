@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleOtherExceptions(Exception ex) {
         return buildResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Something went wrong"
+                "Email already exist"
         );
     }
 
