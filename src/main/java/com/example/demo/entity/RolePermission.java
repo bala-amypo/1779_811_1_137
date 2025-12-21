@@ -31,7 +31,6 @@ public class RolePermission {
         grantedAt = Instant.now();
     }
 
-    // getters & setters
     public Long getId() { return id; }
     public Role getRole() { return role; }
     public Permission getPermission() { return permission; }

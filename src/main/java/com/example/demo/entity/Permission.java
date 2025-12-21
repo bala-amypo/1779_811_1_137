@@ -26,7 +26,6 @@ public class Permission {
         this.active = true;
     }
 
-    // getters & setters
     public Long getId() { return id; }
     public String getPermissionKey() { return permissionKey; }
     public String getDescription() { return description; }

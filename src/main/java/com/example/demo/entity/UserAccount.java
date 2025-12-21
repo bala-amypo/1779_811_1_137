@@ -29,10 +29,8 @@ public class UserAccount {
     private Instant createdAt;
     private Instant updatedAt;
 
-    // ✅ REQUIRED by JPA
     public UserAccount() {}
 
-    // ✅ OPTIONAL (useful)
     public UserAccount(String email, String fullName, String password) {
         this.email = email;
         this.fullName = fullName;

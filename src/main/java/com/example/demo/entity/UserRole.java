@@ -31,7 +31,6 @@ public class UserRole {
         assignedAt = Instant.now();
     }
 
-    // getters & setters
     public Long getId() { return id; }
     public UserAccount getUser() { return user; }
     public Role getRole() { return role; }

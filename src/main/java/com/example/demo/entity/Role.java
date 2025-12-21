@@ -26,7 +26,6 @@ public class Role {
         this.active = true;
     }
 
-    // getters & setters
     public Long getId() { return id; }
     public String getRoleName() { return roleName; }
     public String getDescription() { return description; }
