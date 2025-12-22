@@ -15,25 +15,25 @@ public class RoleServiceImpl implements RoleService {
     public RoleServiceImpl(RoleRepository repo) {
         this.repo = repo;
     }
-
+    @Override
     public Role create(Role role) {
         return repo.save(role);
     }
-
+    @Override
     public Role get(Long id) {
         return repo.findById(id).orElseThrow();
     }
-
+    @Override
     public List<Role> all() {
         return repo.findAll();
     }
-
+    @Override
     public Role update(Long id, Role role) {
         Role db = get(id);
         db.setDescription(role.getDescription());
         return repo.save(db);
     }
-
+    @Override
     public void deactivate(Long id) {
         Role db = get(id);
         db.setActive(false);

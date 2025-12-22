@@ -11,23 +11,23 @@ import java.util.List;
 public class RolePermissionServiceImpl implements RolePermissionService {
 
     private final RolePermissionRepository repo;
-
+    @Override
     public RolePermissionServiceImpl(RolePermissionRepository repo) {
         this.repo = repo;
     }
-
+    @Override
     public RolePermission grant(RolePermission rp) {
         return repo.save(rp);
     }
-
+    @Override
     public RolePermission get(Long id) {
         return repo.findById(id).orElseThrow();
     }
-
+    @Override
     public List<RolePermission> getByRoleId(Long roleId) {
         return repo.findByRole_Id(roleId);
     }
-
+    @Override
     public void revoke(Long id) {
         repo.deleteById(id);
     }
