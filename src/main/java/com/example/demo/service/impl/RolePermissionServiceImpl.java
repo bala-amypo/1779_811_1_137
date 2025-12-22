@@ -11,7 +11,7 @@ import java.util.List;
 public class RolePermissionServiceImpl implements RolePermissionService {
 
     private final RolePermissionRepository repo;
-    @Override
+
     public RolePermissionServiceImpl(RolePermissionRepository repo) {
         this.repo = repo;
     }
