@@ -36,7 +36,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBadRequest(BadRequestException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrity(DataIntegrityViolationException ex) {
         return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
