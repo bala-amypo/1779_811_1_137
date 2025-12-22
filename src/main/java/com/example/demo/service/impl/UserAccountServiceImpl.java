@@ -21,7 +21,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserAccount create(UserAccount user) {
         if (repository.existsByEmail(user.getEmail())) {
-            // ✅ USE CUSTOM EXCEPTION (NOT IllegalArgumentException)
             throw new BadRequestException("Email already exists");
         }
         return repository.save(user);
