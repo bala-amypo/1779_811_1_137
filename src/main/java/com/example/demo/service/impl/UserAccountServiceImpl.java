@@ -11,11 +11,9 @@ import java.util.List;
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository repository;
-
     public UserAccountServiceImpl(UserAccountRepository repository) {
         this.repository = repository;
     }
-    
     @Override
     public UserAccount create(UserAccount user) {
         if (repository.existsByEmail(user.getEmail())) {
@@ -23,24 +21,20 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
         return repository.save(user);
     }
-
     @Override
     public UserAccount get(Long id) {
         return repository.findById(id).orElseThrow();
     }
-
     @Override
     public List<UserAccount> all() {
         return repository.findAll();
     }
-
     @Override
     public UserAccount update(Long id, UserAccount user) {
         UserAccount db = get(id);
         db.setFullName(user.getFullName());
         return repository.save(db);
     }
-
     @Override
     public void deactivate(Long id) {
         UserAccount db = get(id);
