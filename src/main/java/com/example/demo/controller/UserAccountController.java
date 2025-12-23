@@ -17,18 +17,14 @@ public class UserAccountController {
     public UserAccountController(UserAccountService service) {
         this.service = service;
     }
-
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public UserAccount create(@Valid @RequestBody UserAccount user) {
         return service.create(user);
     }
-
     @GetMapping("/{id}")
     public UserAccount get(@PathVariable Long id) {
         return service.get(id);
     }
-
     @GetMapping
     public List<UserAccount> all() {
         return service.all();
@@ -42,7 +38,6 @@ public class UserAccountController {
     }
 
     @PutMapping("/{id}/deactivate")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivate(@PathVariable Long id) {
         service.deactivate(id);
     }
