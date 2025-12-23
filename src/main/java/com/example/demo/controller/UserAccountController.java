@@ -18,26 +18,22 @@ public class UserAccountController {
         this.service = service;
     }
 
-    // ✅ CREATE USER (Validation enabled)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserAccount create(@Valid @RequestBody UserAccount user) {
         return service.create(user);
     }
 
-    // ✅ GET USER BY ID
     @GetMapping("/{id}")
     public UserAccount get(@PathVariable Long id) {
         return service.get(id);
     }
 
-    // ✅ GET ALL USERS
     @GetMapping
     public List<UserAccount> all() {
         return service.all();
     }
 
-    // ✅ UPDATE USER (Validation enabled)
     @PutMapping("/{id}")
     public UserAccount update(
             @PathVariable Long id,
@@ -45,7 +41,6 @@ public class UserAccountController {
         return service.update(id, user);
     }
 
-    // ✅ SOFT DELETE / DEACTIVATE USER
     @PutMapping("/{id}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivate(@PathVariable Long id) {
