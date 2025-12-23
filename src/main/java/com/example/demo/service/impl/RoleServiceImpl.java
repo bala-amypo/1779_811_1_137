@@ -20,7 +20,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role create(Role role) {
-        // ✅ CHECK UNIQUE ROLE NAME
         if (repo.existsByRoleName(role.getRoleName())) {
             throw new BadRequestException("Role name already exists");
         }
