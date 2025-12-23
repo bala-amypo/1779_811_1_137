@@ -20,22 +20,18 @@ public class PermissionController {
     public Permission create(@RequestBody Permission permission) {
         return service.create(permission);
     }
-
     @GetMapping("/{id}")
     public Permission get(@PathVariable Long id) {
         return service.get(id);
     }
-
     @GetMapping
     public List<Permission> all() {
         return service.all();
     }
-
     @PutMapping("/{id}")
     public Permission update(@PathVariable Long id, @RequestBody Permission permission) {
         return service.update(id, permission);
     }
-
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
         service.deactivate(id);
