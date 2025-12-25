@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Role;
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.RoleService;
@@ -19,37 +18,25 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role create(Role role) {
-        if (repo.existsByRoleName(role.getRoleName())) {
-            throw new BadRequestException("Role name already exists");
-        }
+    public Role createRole(Role role) {
         return repo.save(role);
     }
 
     @Override
-    public Role get(Long id) {
+    public Role getRoleById(Long id) {
         return repo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Role not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
     }
 
     @Override
-    public List<Role> all() {
+    public List<Role> getAllRoles() {
         return repo.findAll();
     }
 
     @Override
-    public Role update(Long id, Role role) {
-        Role db = get(id);
-        db.setRoleName(role.getRoleName());
-        db.setDescription(role.getDescription());
-        return repo.save(db);
-    }
-
-    @Override
-    public void deactivate(Long id) {
-        Role db = get(id);
-        db.setActive(false);
-        repo.save(db);
+    public void deactivateRole(Long id) {
+        Role r = getRoleById(id);
+        r.setActive(false);
+        repo.save(r);
     }
 }

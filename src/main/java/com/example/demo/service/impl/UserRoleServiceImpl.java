@@ -15,20 +15,19 @@ public class UserRoleServiceImpl implements UserRoleService {
     public UserRoleServiceImpl(UserRoleRepository repo) {
         this.repo = repo;
     }
+
     @Override
-    public UserRole assign(UserRole ur) {
-        return repo.save(ur);
+    public UserRole assignRole(UserRole userRole) {
+        return repo.save(userRole);
     }
+
     @Override
-    public UserRole get(Long id) {
-        return repo.findById(id).orElseThrow();
-    }
-    @Override
-    public List<UserRole> getByUserId(Long userId) {
+    public List<UserRole> getRolesForUser(Long userId) {
         return repo.findByUser_Id(userId);
     }
+
     @Override
-    public void remove(Long id) {
+    public void removeRole(Long id) {
         repo.deleteById(id);
     }
 }

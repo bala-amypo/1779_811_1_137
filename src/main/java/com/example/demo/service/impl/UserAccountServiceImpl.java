@@ -1,10 +1,10 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserAccount;
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,43 +12,36 @@ import java.util.List;
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
 
-    private final UserAccountRepository repository;
+    private final UserAccountRepository repo;
+    private final PasswordEncoder encoder;
 
-    public UserAccountServiceImpl(UserAccountRepository repository) {
-        this.repository = repository;
+    public UserAccountServiceImpl(UserAccountRepository repo,
+                                  PasswordEncoder encoder) {
+        this.repo = repo;
+        this.encoder = encoder;
     }
 
     @Override
-    public UserAccount create(UserAccount user) {
-        if (repository.existsByEmail(user.getEmail())) {
-            throw new BadRequestException("Email already exists");
-        }
-        return repository.save(user);
+    public UserAccount createUser(UserAccount user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        return repo.save(user);
     }
 
     @Override
-    public UserAccount get(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with id " + id));
+    public UserAccount getUserById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
-    public List<UserAccount> all() {
-        return repository.findAll();
+    public List<UserAccount> getAllUsers() {
+        return repo.findAll();
     }
 
     @Override
-    public UserAccount update(Long id, UserAccount user) {
-        UserAccount db = get(id);
-        db.setFullName(user.getFullName());
-        return repository.save(db);
-    }
-
-    @Override
-    public void deactivate(Long id) {
-        UserAccount db = get(id);
-        db.setActive(false);
-        repository.save(db);
+    public void deactivateUser(Long id) {
+        UserAccount u = getUserById(id);
+        u.setActive(false);
+        repo.save(u);
     }
 }

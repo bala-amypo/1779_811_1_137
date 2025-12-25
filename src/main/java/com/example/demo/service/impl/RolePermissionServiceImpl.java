@@ -15,20 +15,19 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public RolePermissionServiceImpl(RolePermissionRepository repo) {
         this.repo = repo;
     }
+
     @Override
-    public RolePermission grant(RolePermission rp) {
+    public RolePermission grantPermission(RolePermission rp) {
         return repo.save(rp);
     }
+
     @Override
-    public RolePermission get(Long id) {
-        return repo.findById(id).orElseThrow();
-    }
-    @Override
-    public List<RolePermission> getByRoleId(Long roleId) {
+    public List<RolePermission> getPermissionsForRole(Long roleId) {
         return repo.findByRole_Id(roleId);
     }
+
     @Override
-    public void revoke(Long id) {
+    public void revokePermission(Long id) {
         repo.deleteById(id);
     }
 }

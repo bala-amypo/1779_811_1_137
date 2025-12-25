@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Permission;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PermissionRepository;
 import com.example.demo.service.PermissionService;
 import org.springframework.stereotype.Service;
@@ -16,27 +17,26 @@ public class PermissionServiceImpl implements PermissionService {
         this.repo = repo;
     }
 
-    public Permission create(Permission permission) {
+    @Override
+    public Permission createPermission(Permission permission) {
         return repo.save(permission);
     }
 
-    public Permission get(Long id) {
-        return repo.findById(id).orElseThrow();
+    @Override
+    public Permission getPermissionById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Permission not found"));
     }
 
-    public List<Permission> all() {
+    @Override
+    public List<Permission> getAllPermissions() {
         return repo.findAll();
     }
 
-    public Permission update(Long id, Permission permission) {
-        Permission db = get(id);
-        db.setDescription(permission.getDescription());
-        return repo.save(db);
-    }
-
-    public void deactivate(Long id) {
-        Permission db = get(id);
-        db.setActive(false);
-        repo.save(db);
+    @Override
+    public void deactivatePermission(Long id) {
+        Permission p = getPermissionById(id);
+        p.setActive(false);
+        repo.save(p);
     }
 }
