@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.entity.UserAccount;
 import com.example.demo.service.UserAccountService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,28 +16,24 @@ public class UserAccountController {
     public UserAccountController(UserAccountService service) {
         this.service = service;
     }
+
     @PostMapping
     public UserAccount create(@Valid @RequestBody UserAccount user) {
-        return service.create(user);
-    }
-    @GetMapping("/{id}")
-    public UserAccount get(@PathVariable Long id) {
-        return service.get(id);
-    }
-    @GetMapping
-    public List<UserAccount> all() {
-        return service.all();
+        return service.createUser(user);
     }
 
-    @PutMapping("/{id}")
-    public UserAccount update(
-            @PathVariable Long id,
-            @Valid @RequestBody UserAccount user) {
-        return service.update(id, user);
+    @GetMapping("/{id}")
+    public UserAccount getById(@PathVariable Long id) {
+        return service.getUserById(id);
+    }
+
+    @GetMapping
+    public List<UserAccount> getAll() {
+        return service.getAllUsers();
     }
 
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
-        service.deactivate(id);
+        service.deactivateUser(id);
     }
 }

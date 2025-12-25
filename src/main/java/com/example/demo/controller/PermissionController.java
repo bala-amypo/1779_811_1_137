@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Permission;
 import com.example.demo.service.PermissionService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,23 +18,22 @@ public class PermissionController {
     }
 
     @PostMapping
-    public Permission create(@RequestBody Permission permission) {
-        return service.create(permission);
+    public Permission create(@Valid @RequestBody Permission permission) {
+        return service.createPermission(permission);
     }
+
     @GetMapping("/{id}")
     public Permission get(@PathVariable Long id) {
-        return service.get(id);
+        return service.getPermissionById(id);
     }
+
     @GetMapping
-    public List<Permission> all() {
-        return service.all();
+    public List<Permission> getAll() {
+        return service.getAllPermissions();
     }
-    @PutMapping("/{id}")
-    public Permission update(@PathVariable Long id, @RequestBody Permission permission) {
-        return service.update(id, permission);
-    }
+
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
-        service.deactivate(id);
+        service.deactivatePermission(id);
     }
 }

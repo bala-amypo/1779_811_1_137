@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Role;
 import com.example.demo.service.RoleService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +18,22 @@ public class RoleController {
     }
 
     @PostMapping
-    public Role create(@RequestBody Role role) {
-        return service.create(role);
+    public Role create(@Valid @RequestBody Role role) {
+        return service.createRole(role);
     }
 
     @GetMapping("/{id}")
     public Role get(@PathVariable Long id) {
-        return service.get(id);
+        return service.getRoleById(id);
     }
 
     @GetMapping
-    public List<Role> all() {
-        return service.all();
-    }
-
-    @PutMapping("/{id}")
-    public Role update(@PathVariable Long id, @RequestBody Role role) {
-        return service.update(id, role);
+    public List<Role> getAll() {
+        return service.getAllRoles();
     }
 
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
-        service.deactivate(id);
+        service.deactivateRole(id);
     }
 }

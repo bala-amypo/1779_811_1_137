@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.UserRole;
 import com.example.demo.service.UserRoleService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,22 +18,17 @@ public class UserRoleController {
     }
 
     @PostMapping
-    public UserRole assignRole(@RequestBody UserRole userRole) {
-        return service.assign(userRole);
+    public UserRole assign(@Valid @RequestBody UserRole userRole) {
+        return service.assignRole(userRole);
     }
 
     @GetMapping("/user/{userId}")
-    public List<UserRole> getRolesForUser(@PathVariable Long userId) {
-        return service.getByUserId(userId);
-    }
-
-    @GetMapping("/{id}")
-    public UserRole getMapping(@PathVariable Long id) {
-        return service.get(id);
+    public List<UserRole> getByUser(@PathVariable Long userId) {
+        return service.getRolesForUser(userId);
     }
 
     @DeleteMapping("/{id}")
-    public void removeRole(@PathVariable Long id) {
-        service.remove(id);
+    public void remove(@PathVariable Long id) {
+        service.removeRole(id);
     }
 }
