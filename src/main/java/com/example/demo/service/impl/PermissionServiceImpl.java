@@ -5,12 +5,9 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PermissionRepository;
 import com.example.demo.service.PermissionService;
-
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionRepository repo;
@@ -20,12 +17,12 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Permission createPermission(Permission permission) {
-        if (repo.findByPermissionKey(permission.getPermissionKey()).isPresent()) {
+    public Permission createPermission(Permission p) {
+        if (repo.findByPermissionKey(p.getPermissionKey()).isPresent()) {
             throw new BadRequestException("Duplicate permission");
         }
-        permission.setActive(true);
-        return repo.save(permission);
+        p.setActive(true);
+        return repo.save(p);
     }
 
     @Override
