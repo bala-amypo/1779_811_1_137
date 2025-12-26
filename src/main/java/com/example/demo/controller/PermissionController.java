@@ -15,8 +15,8 @@ public class PermissionController {
     }
 
     @PostMapping
-    public Permission create(@RequestBody Permission permission) {
-        return service.createPermission(permission);
+    public Permission create(@RequestBody Permission p) {
+        return service.createPermission(p);
     }
 
     @DeleteMapping("/{id}")

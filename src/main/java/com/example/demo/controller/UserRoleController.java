@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.UserRole;
 import com.example.demo.service.UserRoleService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user-roles")
+@RequestMapping("/user-roles")
 public class UserRoleController {
 
     private final UserRoleService service;
@@ -18,13 +17,13 @@ public class UserRoleController {
     }
 
     @PostMapping
-    public UserRole assign(@Valid @RequestBody UserRole userRole) {
-        return service.assignRole(userRole);
+    public UserRole assign(@RequestBody UserRole ur) {
+        return service.assignRole(ur);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<UserRole> getByUser(@PathVariable Long userId) {
-        return service.getRolesForUser(userId);
+    @GetMapping("/user/{id}")
+    public List<UserRole> getRoles(@PathVariable Long id) {
+        return service.getRolesForUser(id);
     }
 
     @DeleteMapping("/{id}")

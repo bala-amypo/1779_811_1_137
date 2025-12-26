@@ -15,13 +15,13 @@ public class RoleController {
     }
 
     @PostMapping
-    public Role create(@RequestBody Role role) {
-        return service.createRole(role);
+    public Role create(@RequestBody Role r) {
+        return service.createRole(r);
     }
 
     @PutMapping("/{id}")
-    public Role update(@PathVariable Long id, @RequestBody Role role) {
-        return service.updateRole(id, role);
+    public Role update(@PathVariable Long id, @RequestBody Role r) {
+        return service.updateRole(id, r);
     }
 
     @DeleteMapping("/{id}")

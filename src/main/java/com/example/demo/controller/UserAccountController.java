@@ -17,13 +17,13 @@ public class UserAccountController {
     }
 
     @PostMapping
-    public UserAccount create(@RequestBody UserAccount user) {
-        return service.createUser(user);
+    public UserAccount create(@RequestBody UserAccount u) {
+        return service.createUser(u);
     }
 
     @PutMapping("/{id}")
-    public UserAccount update(@PathVariable Long id, @RequestBody UserAccount user) {
-        return service.updateUser(id, user);
+    public UserAccount update(@PathVariable Long id, @RequestBody UserAccount u) {
+        return service.updateUser(id, u);
     }
 
     @GetMapping("/{id}")
@@ -32,7 +32,7 @@ public class UserAccountController {
     }
 
     @GetMapping
-    public List<UserAccount> getAll() {
+    public List<UserAccount> all() {
         return service.getAllUsers();
     }
 
