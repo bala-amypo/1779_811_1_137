@@ -4,59 +4,49 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
-@Component
 public class JwtUtil {
 
-    // 🔐 Same structure as screenshot
     private static final String SECRET =
             "sdjhgwbuwbbgwuub08QFQ8qg87G1bfewifbuwg7iu8wefqhjk";
 
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    // ⏰ 1 hour (tests only check > 0)
-    private final long EXPIRATION_MILLIS = 60 * 60 * 1000;
+    private final long EXPIRATION_MILLIS = 60 * 60 * 1000; // 1 hour
 
-    // =================================================
-    // REQUIRED BY YOUR TEST CASE
-    // =================================================
-
-    // ✔ Test: generateToken(Map<String,Object>, String)
+    // REQUIRED BY TEST
     public String generateToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MILLIS))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + EXPIRATION_MILLIS)
+                )
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // ✔ Test: getUsername(token)
+    // REQUIRED BY TEST
     public String getUsername(String token) {
         return extractClaims(token).getSubject();
     }
 
-    // ✔ Test: isTokenValid(token, username)
+    // REQUIRED BY TEST
     public boolean isTokenValid(String token, String username) {
-        String extractedUsername = getUsername(token);
-        return extractedUsername.equals(username) && !isTokenExpired(token);
+        return getUsername(token).equals(username) && !isTokenExpired(token);
     }
 
-    // ✔ Test: getExpirationMillis() > 0
+    // REQUIRED BY TEST
     public long getExpirationMillis() {
         return EXPIRATION_MILLIS;
     }
 
-    // =================================================
-    // HELPER METHODS (SCREENSHOT STYLE)
-    // =================================================
-
+    // helpers
     private boolean isTokenExpired(String token) {
         return extractClaims(token)
                 .getExpiration()
