@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequestDto;
-import com.example.demo.dto.AuthResponseDto;
-import com.example.demo.dto.RegisterRequestDto;
+import com.example.demo.dto.*;
 import com.example.demo.service.AuthService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,13 +14,13 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/register")
-    public AuthResponseDto register(@Valid @RequestBody RegisterRequestDto request) {
-        return authService.register(request);
+    @PostMapping("/login")
+    public AuthResponseDto login(@RequestBody AuthRequestDto dto) {
+        return authService.login(dto);
     }
 
-    @PostMapping("/login")
-    public AuthResponseDto login(@Valid @RequestBody AuthRequestDto request) {
-        return authService.login(request);
+    @PostMapping("/register")
+    public void register(@RequestBody RegisterRequestDto dto) {
+        authService.register(dto);
     }
 }
