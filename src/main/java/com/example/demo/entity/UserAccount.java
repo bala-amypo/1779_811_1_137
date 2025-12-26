@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "user_accounts")
@@ -16,10 +16,13 @@ public class UserAccount {
     private String fullName;
     private boolean active;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
-    // ===== GETTERS & SETTERS (REQUIRED) =====
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
+    // ===== getters & setters =====
 
     public Long getId() {
         return id;
@@ -29,23 +32,23 @@ public class UserAccount {
         this.id = id;
     }
 
-    public String getEmail() {                 // 🔥 FIX
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {       // 🔥 FIX
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {              // 🔥 FIX
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) { // 🔥 FIX
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getFullName() {               // 🔥 FIX
+    public String getFullName() {
         return fullName;
     }
 
@@ -53,41 +56,42 @@ public class UserAccount {
         this.fullName = fullName;
     }
 
-    public boolean isActive() {                 // 🔥 FIX
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {     // 🔥 FIX
+    public void setActive(boolean active) {
         this.active = active;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    // ===== JPA LIFECYCLE =====
+    // ===== lifecycle callbacks expected by tests =====
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        Date now = new Date();
+        this.createdAt = now;
+        this.updatedAt = now;
         this.active = true;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = new Date();
     }
 }
