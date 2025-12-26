@@ -1,41 +1,30 @@
-package com.example.demo.service.impl;
+package com.example.demo.controller;
 
-import com.example.demo.service.RolePermissionService;
-import com.example.demo.repository.RolePermissionRepository;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.PermissionRepository;
 import com.example.demo.entity.Permission;
 import com.example.demo.entity.RolePermission;
+import com.example.demo.service.RolePermissionService;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Collections;
 
-@Service
-public class RolePermissionServiceImpl implements RolePermissionService {
+@RestController
+@RequestMapping("/role-permissions")
+public class RolePermissionController {
 
-    private final RolePermissionRepository rolePermissionRepository;
-    private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;
+    private final RolePermissionService service;
 
-    public RolePermissionServiceImpl(
-            RolePermissionRepository rolePermissionRepository,
-            RoleRepository roleRepository,
-            PermissionRepository permissionRepository) {
-
-        this.rolePermissionRepository = rolePermissionRepository;
-        this.roleRepository = roleRepository;
-        this.permissionRepository = permissionRepository;
+    public RolePermissionController(RolePermissionService service) {
+        this.service = service;
     }
 
-    @Override
-    public List<Permission> getPermissionsForRole(Long roleId) {
-        // simple safe implementation
-        return Collections.emptyList();
+    // ✅ FIXED TYPE
+    @GetMapping("/role/{roleId}")
+    public List<Permission> getPermissionsForRole(@PathVariable Long roleId) {
+        return service.getPermissionsForRole(roleId);
     }
 
-    @Override
-    public RolePermission getMappingById(Long id) {
-        return rolePermissionRepository.findById(id).orElse(null);
+    @GetMapping("/{id}")
+    public RolePermission getMappingById(@PathVariable Long id) {
+        return service.getMappingById(id);
     }
 }
