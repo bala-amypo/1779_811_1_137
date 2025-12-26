@@ -1,9 +1,15 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.RolePermission;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
 
-public interface RolePermissionRepository extends JpaRepository<RolePermission, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface RolePermissionRepository {
+
+    Optional<RolePermission> findById(Long id);
+
     List<RolePermission> findByRole_Id(Long roleId);
+
+    RolePermission save(RolePermission rolePermission);
 }
