@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.AuthRequestDto;
+import com.example.demo.dto.AuthResponseDto;
+import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.entity.UserAccount;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserAccountRepository;
@@ -11,51 +13,62 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private final UserAccountRepository repo;
-    private final PasswordEncoder encoder;
-    private final AuthenticationManager authManager;
+    private final UserAccountRepository userAccountRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(UserAccountRepository repo,
-                           PasswordEncoder encoder,
-                           AuthenticationManager authManager,
-                           JwtUtil jwtUtil) {
-        this.repo = repo;
-        this.encoder = encoder;
-        this.authManager = authManager;
+    // ✅ MUST MATCH TEST CASE EXACTLY
+    public AuthServiceImpl(
+            UserAccountRepository userAccountRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil
+    ) {
+        this.userAccountRepository = userAccountRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
     public AuthResponseDto login(AuthRequestDto request) {
 
-        authManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
 
-        UserAccount user = repo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid login"));
+        UserAccount user = userAccountRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
+        String token = jwtUtil.generateToken(
+                Map.of("userId", user.getId()),
+                user.getEmail()
+        );
 
-        String token = jwtUtil.generateToken(claims, user.getEmail());
-        return new AuthResponseDto(token);
+        AuthResponseDto response = new AuthResponseDto();
+        response.setToken(token);
+        return response;
     }
 
     @Override
-    public void register(RegisterRequestDto request) {
-        if (repo.existsByEmail(request.getEmail())) {
+    public void register(RegisterRequestDto dto) {
+
+        if (userAccountRepository.existsByEmail(dto.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
+
+        UserAccount user = new UserAccount();
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userAccountRepository.save(user);
     }
 }
