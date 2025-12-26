@@ -10,35 +10,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository repo;
+    private final RoleRepository roleRepository;
 
-    public RoleServiceImpl(RoleRepository repo) {
-        this.repo = repo;
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public Role createRole(Role role) {
-        if (repo.findByRoleName(role.getRoleName()).isPresent()) {
-            throw new BadRequestException("Duplicate role");
+        if (roleRepository.findByRoleName(role.getRoleName()).isPresent()) {
+            throw new BadRequestException("Role exists");
         }
         role.setActive(true);
-        return repo.save(role);
+        return roleRepository.save(role);
     }
 
     @Override
-    public Role updateRole(Long id, Role role) {
-        Role existing = repo.findById(id)
+    public Role updateRole(Long id, Role updated) {
+        Role existing = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-        existing.setRoleName(role.getRoleName());
-        existing.setDescription(role.getDescription());
-        return repo.save(existing);
+
+        existing.setRoleName(updated.getRoleName());
+        existing.setDescription(updated.getDescription());
+        return roleRepository.save(existing);
     }
 
     @Override
     public void deactivateRole(Long id) {
-        Role role = repo.findById(id)
+        Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
         role.setActive(false);
-        repo.save(role);
+        roleRepository.save(role);
     }
 }

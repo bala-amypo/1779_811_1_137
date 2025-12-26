@@ -10,26 +10,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
-    private final PermissionRepository repo;
+    private final PermissionRepository permissionRepository;
 
-    public PermissionServiceImpl(PermissionRepository repo) {
-        this.repo = repo;
+    public PermissionServiceImpl(PermissionRepository permissionRepository) {
+        this.permissionRepository = permissionRepository;
     }
 
     @Override
-    public Permission createPermission(Permission p) {
-        if (repo.findByPermissionKey(p.getPermissionKey()).isPresent()) {
-            throw new BadRequestException("Duplicate permission");
+    public Permission createPermission(Permission permission) {
+        if (permissionRepository.findByPermissionKey(permission.getPermissionKey()).isPresent()) {
+            throw new BadRequestException("Permission exists");
         }
-        p.setActive(true);
-        return repo.save(p);
+        permission.setActive(true);
+        return permissionRepository.save(permission);
     }
 
     @Override
     public void deactivatePermission(Long id) {
-        Permission p = repo.findById(id)
+        Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Permission not found"));
-        p.setActive(false);
-        repo.save(p);
+        permission.setActive(false);
+        permissionRepository.save(permission);
     }
 }
