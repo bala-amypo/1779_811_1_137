@@ -1,13 +1,22 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.Role;
+import com.example.demo.entity.UserAccount;
+import com.example.demo.entity.UserRole;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.*;
+import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserAccountRepository;
+import com.example.demo.repository.UserRoleRepository;
 import com.example.demo.service.UserRoleService;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
+@Transactional
 public class UserRoleServiceImpl implements UserRoleService {
 
     private final UserRoleRepository userRoleRepo;
@@ -23,18 +32,21 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public UserRole assignRole(UserRole userRole) {
-        UserAccount user = userRepo.findById(userRole.getUser().getId())
+    public UserRole assignRole(UserRole mapping) {
+
+        UserAccount user = userRepo.findById(mapping.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Role role = roleRepo.findById(userRole.getRole().getId())
+        Role role = roleRepo.findById(mapping.getRole().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
         if (!user.isActive() || !role.isActive()) {
             throw new BadRequestException("Inactive user or role");
         }
 
-        return userRoleRepo.save(userRole);
+        mapping.setUser(user);
+        mapping.setRole(role);
+        return userRoleRepo.save(mapping);
     }
 
     @Override

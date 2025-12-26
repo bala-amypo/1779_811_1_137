@@ -4,7 +4,7 @@ import com.example.demo.entity.RolePermission;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface RolePermissionRepository {
 
     Optional<RolePermission> findById(Long id);

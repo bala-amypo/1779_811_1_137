@@ -4,7 +4,7 @@ import com.example.demo.entity.UserRole;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface UserRoleRepository {
 
     Optional<UserRole> findById(Long id);

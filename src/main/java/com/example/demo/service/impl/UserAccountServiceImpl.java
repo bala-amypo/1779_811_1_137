@@ -6,8 +6,13 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
+@Service
+@Transactional
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository repo;
@@ -19,19 +24,19 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserAccount createUser(UserAccount user) {
         if (repo.existsByEmail(user.getEmail())) {
-            throw new BadRequestException("Email exists");
+            throw new BadRequestException("Duplicate email");
         }
         user.setActive(true);
         return repo.save(user);
     }
 
     @Override
-    public UserAccount updateUser(Long id, UserAccount user) {
+    public UserAccount updateUser(Long id, UserAccount updated) {
         UserAccount existing = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        existing.setEmail(user.getEmail());
-        existing.setFullName(user.getFullName());
+        existing.setEmail(updated.getEmail());
+        existing.setFullName(updated.getFullName());
         return repo.save(existing);
     }
 

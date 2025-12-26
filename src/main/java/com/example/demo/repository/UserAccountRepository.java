@@ -4,7 +4,7 @@ import com.example.demo.entity.UserAccount;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface UserAccountRepository {
 
     Optional<UserAccount> findById(Long id);

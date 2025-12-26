@@ -6,6 +6,11 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PermissionRepository;
 import com.example.demo.service.PermissionService;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionRepository repo;

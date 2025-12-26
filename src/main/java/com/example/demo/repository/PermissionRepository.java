@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import com.example.demo.entity.Permission;
 
 import java.util.Optional;
+@Repository
 
 public interface PermissionRepository {
 

@@ -6,6 +6,11 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.RoleService;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository repo;
@@ -24,20 +29,19 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role updateRole(Long id, Role role) {
-        Role existing = repo.findById(id)
+    public Role updateRole(Long id, Role updated) {
+        Role role = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
-        existing.setRoleName(role.getRoleName());
-        existing.setDescription(role.getDescription());
-        return repo.save(existing);
+        role.setRoleName(updated.getRoleName());
+        role.setDescription(updated.getDescription());
+        return repo.save(role);
     }
 
     @Override
     public void deactivateRole(Long id) {
         Role role = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-
         role.setActive(false);
         repo.save(role);
     }
