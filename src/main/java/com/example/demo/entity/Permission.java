@@ -3,16 +3,13 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "permissions")
 public class Permission {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @Column(unique = true)
     private String permissionKey;
-
     private boolean active = true;
 
     public Long getId() { return id; }

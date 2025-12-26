@@ -4,19 +4,16 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "user_roles")
 public class UserRole {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private UserAccount user;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
     private Role role;
 
     private Instant assignedAt;

@@ -4,19 +4,16 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "role_permissions")
 public class RolePermission {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
     private Role role;
 
     @ManyToOne
-    @JoinColumn(name = "permission_id")
     private Permission permission;
 
     private Instant grantedAt;

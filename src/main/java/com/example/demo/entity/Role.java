@@ -3,18 +3,14 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @Column(unique = true)
     private String roleName;
-
     private String description;
-
     private boolean active = true;
 
     public Long getId() { return id; }

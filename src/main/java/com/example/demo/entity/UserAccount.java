@@ -4,18 +4,14 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "user_accounts")
 public class UserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String email;
-
     private String fullName;
-
     private boolean active = true;
 
     private Instant createdAt;
