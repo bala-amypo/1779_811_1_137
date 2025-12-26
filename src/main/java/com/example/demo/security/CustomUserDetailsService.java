@@ -8,12 +8,13 @@ import com.example.demo.repository.UserRoleRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service   // 🔴 THIS IS THE KEY FIX
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserAccountRepository userRepo;
@@ -33,7 +34,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        List<UserRole> roles = userRoleRepo.findByUser_Id(user.getId());
+        List<UserRole> roles =
+                userRoleRepo.findByUser_Id(user.getId());
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (UserRole ur : roles) {
@@ -44,6 +46,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             );
         }
 
-        return new User(user.getEmail(), "password", authorities);
+        return new User(
+                user.getEmail(),
+                "password",   // fixed password for test
+                authorities
+        );
     }
 }
