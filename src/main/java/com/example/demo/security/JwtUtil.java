@@ -1,6 +1,8 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
@@ -9,7 +11,7 @@ import java.util.Map;
 
 public class JwtUtil {
 
-    private final long expirationMillis = 3600000;
+    private final long expirationMillis = 3600000; // 1 hour
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateToken(Map<String, Object> claims, String subject) {
@@ -23,12 +25,7 @@ public class JwtUtil {
     }
 
     public String getUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return extractAllClaims(token).getSubject();
     }
 
     public boolean isTokenValid(String token, String username) {
@@ -37,5 +34,13 @@ public class JwtUtil {
 
     public long getExpirationMillis() {
         return expirationMillis;
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

@@ -5,31 +5,33 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PermissionRepository;
 import com.example.demo.service.PermissionService;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PermissionServiceImpl implements PermissionService {
 
-    private final PermissionRepository permissionRepository;
+    private final PermissionRepository repo;
 
-    public PermissionServiceImpl(PermissionRepository permissionRepository) {
-        this.permissionRepository = permissionRepository;
+    public PermissionServiceImpl(PermissionRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     public Permission createPermission(Permission permission) {
-        if (permissionRepository.findByPermissionKey(permission.getPermissionKey()).isPresent()) {
-            throw new BadRequestException("Permission exists");
+        if (repo.findByPermissionKey(permission.getPermissionKey()).isPresent()) {
+            throw new BadRequestException("Permission already exists");
         }
-        permission.setActive(true);
-        return permissionRepository.save(permission);
+        return repo.save(permission);
     }
 
     @Override
     public void deactivatePermission(Long id) {
-        Permission permission = permissionRepository.findById(id)
+        Permission p = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Permission not found"));
-        permission.setActive(false);
-        permissionRepository.save(permission);
+        p.setActive(false);
+        repo.save(p);
     }
 }

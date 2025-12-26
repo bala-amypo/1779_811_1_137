@@ -5,41 +5,42 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.RoleService;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository roleRepository;
+    private final RoleRepository repo;
 
-    public RoleServiceImpl(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleServiceImpl(RoleRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     public Role createRole(Role role) {
-        if (roleRepository.findByRoleName(role.getRoleName()).isPresent()) {
-            throw new BadRequestException("Role exists");
+        if (repo.findByRoleName(role.getRoleName()).isPresent()) {
+            throw new BadRequestException("Role already exists");
         }
-        role.setActive(true);
-        return roleRepository.save(role);
+        return repo.save(role);
     }
 
     @Override
-    public Role updateRole(Long id, Role updated) {
-        Role existing = roleRepository.findById(id)
+    public Role updateRole(Long id, Role role) {
+        Role existing = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-
-        existing.setRoleName(updated.getRoleName());
-        existing.setDescription(updated.getDescription());
-        return roleRepository.save(existing);
+        existing.setRoleName(role.getRoleName());
+        existing.setDescription(role.getDescription());
+        return repo.save(existing);
     }
 
     @Override
     public void deactivateRole(Long id) {
-        Role role = roleRepository.findById(id)
+        Role role = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
         role.setActive(false);
-        roleRepository.save(role);
+        repo.save(role);
     }
 }
