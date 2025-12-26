@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.RolePermission;
 import com.example.demo.service.RolePermissionService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/role-permissions")
+@RequestMapping("/role-permissions")
 public class RolePermissionController {
 
     private final RolePermissionService service;
@@ -17,18 +16,15 @@ public class RolePermissionController {
         this.service = service;
     }
 
-    @PostMapping
-    public RolePermission grant(@Valid @RequestBody RolePermission rp) {
-        return service.grantPermission(rp);
-    }
-
+    // Get all permissions for a role
     @GetMapping("/role/{roleId}")
-    public List<RolePermission> getByRole(@PathVariable Long roleId) {
+    public List<RolePermission> getPermissionsForRole(@PathVariable Long roleId) {
         return service.getPermissionsForRole(roleId);
     }
 
-    @DeleteMapping("/{id}")
-    public void revoke(@PathVariable Long id) {
-        service.revokePermission(id);
+    // Get a specific role-permission mapping
+    @GetMapping("/{id}")
+    public RolePermission getMapping(@PathVariable Long id) {
+        return service.getMappingById(id);
     }
 }
