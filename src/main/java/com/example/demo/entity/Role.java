@@ -1,43 +1,31 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "roles")
 public class Role {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String roleName;
-    private String description;   // 🔹 REQUIRED
-    private boolean active = true; // 🔹 REQUIRED
 
-    public Long getId() {
-        return id;
-    }
+    private String description;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private boolean active = true;
 
-    public String getRoleName() {
-        return roleName;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
+    public String getRoleName() { return roleName; }
+    public void setRoleName(String roleName) { this.roleName = roleName; }
 
-    // 🔹 REQUIRED BY RoleServiceImpl
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    // 🔹 REQUIRED BY UserRoleServiceImpl
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }
