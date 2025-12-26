@@ -4,12 +4,12 @@ public class AuthResponseDto {
 
     private String token;
 
-    // REQUIRED by test: new AuthResponseDto(token)
+    // Constructor REQUIRED by your test case
     public AuthResponseDto(String token) {
         this.token = token;
     }
 
-    // getter ONLY (no setter required by test)
+    // Getter REQUIRED by your test case
     public String getToken() {
         return token;
     }
