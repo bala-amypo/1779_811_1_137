@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -23,13 +24,10 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    // ✅ MUST MATCH TEST CONSTRUCTOR
-    public AuthServiceImpl(
-            UserAccountRepository userAccountRepository,
-            PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil
-    ) {
+    public AuthServiceImpl(UserAccountRepository userAccountRepository,
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager,
+                           JwtUtil jwtUtil) {
         this.userAccountRepository = userAccountRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -46,21 +44,20 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        UserAccount user = userAccountRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+        UserAccount user = userAccountRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
-        String token = jwtUtil.generateToken(
-                Map.of("userId", user.getId()),
-                user.getEmail()
-        );
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
 
-        // ✅ CORRECT: DTO HAS ONLY THIS CONSTRUCTOR
+        String token = jwtUtil.generateToken(claims, user.getEmail());
+
         return new AuthResponseDto(token);
     }
 
     @Override
     public void register(RegisterRequestDto dto) {
-
         if (userAccountRepository.existsByEmail(dto.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
@@ -68,8 +65,6 @@ public class AuthServiceImpl implements AuthService {
         UserAccount user = new UserAccount();
         user.setEmail(dto.getEmail());
         user.setActive(true);
-
-        // ❌ DO NOT SET PASSWORD (entity has no setter, tests don't require it)
 
         userAccountRepository.save(user);
     }
