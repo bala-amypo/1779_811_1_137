@@ -1,25 +1,12 @@
 package com.example.demo.service;
 
-import org.springframework.stereotype.Service;
-import com.example.demo.repository.RolePermissionRepository;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.PermissionRepository;
+import java.util.List;
+import com.example.demo.entity.Permission;
+import com.example.demo.entity.RolePermission;
 
-@Service
-public class RolePermissionService {
+public interface RolePermissionService {
 
-    private final RolePermissionRepository rolePermissionRepository;
-    private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;
+    List<Permission> getPermissionsForRole(Long roleId);
 
-    // 🔥 FIX: Constructor matches TEST EXACTLY
-    public RolePermissionService(
-            RolePermissionRepository rolePermissionRepository,
-            RoleRepository roleRepository,
-            PermissionRepository permissionRepository) {
-
-        this.rolePermissionRepository = rolePermissionRepository;
-        this.roleRepository = roleRepository;
-        this.permissionRepository = permissionRepository;
-    }
+    RolePermission getMappingById(Long id);
 }
