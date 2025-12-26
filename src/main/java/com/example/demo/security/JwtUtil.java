@@ -20,10 +20,17 @@ public class JwtUtil {
     private final SecretKey key =
             Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    private final long EXPIRATION_MILLIS = 60 * 60 * 1000; // 1 hour
+    private static final long EXPIRATION_MILLIS = 60 * 60 * 1000; // 1 hour
 
     // ===============================
-    // Generate JWT
+    // Used by SERVICE / TEST CASES
+    // ===============================
+    public String generateToken(String username) {
+        return generateToken(Map.of(), username);
+    }
+
+    // ===============================
+    // Real JWT Generator
     // ===============================
     public String generateToken(Map<String, Object> claims, String username) {
 
@@ -49,18 +56,20 @@ public class JwtUtil {
     // Validate token
     // ===============================
     public boolean isTokenValid(String token, String username) {
-        String tokenUser = getUsername(token);
-        return tokenUser.equals(username)
+        return getUsername(token).equals(username)
                 && extractClaims(token).getExpiration().after(new Date());
     }
 
     // ===============================
-    // Expiration time
+    // Expiry time (used in tests)
     // ===============================
     public long getExpirationMillis() {
         return EXPIRATION_MILLIS;
     }
 
+    // ===============================
+    // Internal claims parser
+    // ===============================
     private Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
