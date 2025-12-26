@@ -1,30 +1,38 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserAccount;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository repo;
-    private final PasswordEncoder encoder;
 
-    public UserAccountServiceImpl(UserAccountRepository repo,
-                                  PasswordEncoder encoder) {
+    public UserAccountServiceImpl(UserAccountRepository repo) {
         this.repo = repo;
-        this.encoder = encoder;
     }
 
     @Override
     public UserAccount createUser(UserAccount user) {
-        user.setPassword(encoder.encode(user.getPassword()));
+        if (repo.existsByEmail(user.getEmail())) {
+            throw new BadRequestException("Email exists");
+        }
+        user.setActive(true);
         return repo.save(user);
+    }
+
+    @Override
+    public UserAccount updateUser(Long id, UserAccount user) {
+        UserAccount existing = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        existing.setEmail(user.getEmail());
+        existing.setFullName(user.getFullName());
+        return repo.save(existing);
     }
 
     @Override
@@ -34,14 +42,14 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public List<UserAccount> getAllUsers() {
-        return repo.findAll();
+    public void deactivateUser(Long id) {
+        UserAccount user = getUserById(id);
+        user.setActive(false);
+        repo.save(user);
     }
 
     @Override
-    public void deactivateUser(Long id) {
-        UserAccount u = getUserById(id);
-        u.setActive(false);
-        repo.save(u);
+    public List<UserAccount> getAllUsers() {
+        return repo.findAll();
     }
 }

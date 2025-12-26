@@ -6,5 +6,6 @@ import java.util.List;
 public interface UserRoleService {
     UserRole assignRole(UserRole userRole);
     List<UserRole> getRolesForUser(Long userId);
+    UserRole getMappingById(Long id);
     void removeRole(Long id);
 }

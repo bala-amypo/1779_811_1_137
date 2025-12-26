@@ -1,14 +1,11 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Role;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.RoleService;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Service
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository repo;
@@ -19,24 +16,29 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role createRole(Role role) {
+        if (repo.findByRoleName(role.getRoleName()).isPresent()) {
+            throw new BadRequestException("Duplicate role");
+        }
+        role.setActive(true);
         return repo.save(role);
     }
 
     @Override
-    public Role getRoleById(Long id) {
-        return repo.findById(id)
+    public Role updateRole(Long id, Role role) {
+        Role existing = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-    }
 
-    @Override
-    public List<Role> getAllRoles() {
-        return repo.findAll();
+        existing.setRoleName(role.getRoleName());
+        existing.setDescription(role.getDescription());
+        return repo.save(existing);
     }
 
     @Override
     public void deactivateRole(Long id) {
-        Role r = getRoleById(id);
-        r.setActive(false);
-        repo.save(r);
+        Role role = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+
+        role.setActive(false);
+        repo.save(role);
     }
 }
