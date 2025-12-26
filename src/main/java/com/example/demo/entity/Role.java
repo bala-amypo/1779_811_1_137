@@ -4,11 +4,10 @@ import jakarta.persistence.*;
 
 @Entity
 public class Role {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String roleName;
     private String description;
     private boolean active = true;

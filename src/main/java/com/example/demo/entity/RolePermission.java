@@ -7,7 +7,7 @@ import java.time.Instant;
 public class RolePermission {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
