@@ -5,7 +5,6 @@ import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.service.AuthService;
 
-// ✅ ADD THESE IMPORTS
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +19,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDto dto) {
-        return ResponseEntity.ok(authService.register(dto));
+    public ResponseEntity<Void> register(@RequestBody RegisterRequestDto dto) {
+        authService.register(dto);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
