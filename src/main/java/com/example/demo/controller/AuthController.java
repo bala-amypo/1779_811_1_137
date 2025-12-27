@@ -16,13 +16,14 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/login")
-    public AuthResponseDto login(@RequestBody AuthRequestDto dto) {
-        return authService.login(dto);
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto dto) {
+        return ResponseEntity.ok(authService.register(dto));
     }
 
-    @PostMapping("/register")
-    public void register(@RequestBody RegisterRequestDto dto) {
-        authService.register(dto);
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDto> login(
+            @RequestBody AuthRequestDto dto) {
+        return ResponseEntity.ok(authService.login(dto));
     }
 }
