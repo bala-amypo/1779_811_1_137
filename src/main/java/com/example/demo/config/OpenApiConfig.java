@@ -15,13 +15,9 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-
-            // ✅ Force HTTPS so browser doesn't block Swagger calls
             .servers(List.of(
                 new Server().url("https://9368.pro604cr.amypo.ai")
             ))
-
-            // ✅ JWT Bearer Authentication support
             .components(new Components()
                 .addSecuritySchemes("bearerAuth",
                     new SecurityScheme()
