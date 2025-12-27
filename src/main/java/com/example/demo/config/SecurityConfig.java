@@ -1,11 +1,11 @@
 package com.example.demo.config;
 
-import com.example.demo.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,36 +14,44 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+            // ❌ disable basic auth popup
+            .httpBasic(httpBasic -> httpBasic.disable())
+
+            // ❌ disable CSRF (REST API)
             .csrf(csrf -> csrf.disable())
+
+            // ✅ stateless (JWT)
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
+            // ✅ authorization rules
             .authorizeHttpRequests(auth -> auth
-                // ✅ PUBLIC ENDPOINTS
                 .requestMatchers(
                     "/api/auth/**",
+                    "/v3/api-docs/**",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**"
+                    "/swagger-ui.html"
                 ).permitAll()
-
-                // 🔒 EVERYTHING ELSE NEEDS AUTH
                 .anyRequest().authenticated()
-            )
-            .httpBasic(basic -> {});
+            );
 
         return http.build();
     }
 
-    // REQUIRED for AuthServiceImpl
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // REQUIRED for AuthServiceImpl
+    // ✅ REQUIRED for AuthService
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    // ✅ REQUIRED for password hashing
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
