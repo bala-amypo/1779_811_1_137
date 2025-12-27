@@ -16,20 +16,11 @@ public class RolePermissionController {
     public RolePermissionController(RolePermissionService service) {
         this.service = service;
     }
-
-    /**
-     * Test uses:
-     * service.getPermissionsForRole(Long)
-     */
     @GetMapping("/role/{roleId}")
     public List<RolePermission> getPermissionsForRole(@PathVariable Long roleId) {
         return service.getPermissionsForRole(roleId);
     }
 
-    /**
-     * Test uses:
-     * service.getMappingById(Long)
-     */
     @GetMapping("/{id}")
     public RolePermission getMappingById(@PathVariable Long id) {
         return service.getMappingById(id);
