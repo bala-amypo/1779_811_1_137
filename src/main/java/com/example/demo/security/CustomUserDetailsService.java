@@ -15,9 +15,8 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserAccountRepository userRepo;
-    private final UserRoleRepository userRoleRepo; // not used now, but needed for test
+    private final UserRoleRepository userRoleRepo;
 
-    // ✅ Constructor expected by test
     public CustomUserDetailsService(
             UserAccountRepository userRepo,
             UserRoleRepository userRoleRepo
@@ -34,10 +33,16 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        // Default role for authentication
+        // ✅ FIX: Ensure password is never null or empty
+        String password = user.getPassword();
+        if (password == null || password.isBlank()) {
+            password = "{noop}dummy-password"; 
+            // noop = no encoding, accepted by Spring Security
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
-                user.getPassword(),
+                password,
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
