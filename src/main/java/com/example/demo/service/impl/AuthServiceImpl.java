@@ -72,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
         UserAccount user = new UserAccount();
         user.setEmail(request.getEmail());
         // ✅ REQUIRED FIX
-    user.setUsername(request.getEmail());
+        user.setUsername(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepo.save(user);
