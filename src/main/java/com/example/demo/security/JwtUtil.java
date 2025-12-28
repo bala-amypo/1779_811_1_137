@@ -2,17 +2,26 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    private final long expirationMillis = 1000 * 60 * 60; // 1 hour
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration}")
+    private long expirationMillis;
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String generateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -20,7 +29,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
-                .signWith(key)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -33,7 +42,7 @@ public class JwtUtil {
     }
 
     public long getExpirationMillis() {
-        return expirationMillis; // ✅ REQUIRED BY TEST
+        return expirationMillis;
     }
 
     private boolean isTokenExpired(String token) {
@@ -42,7 +51,7 @@ public class JwtUtil {
 
     private Claims getAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
