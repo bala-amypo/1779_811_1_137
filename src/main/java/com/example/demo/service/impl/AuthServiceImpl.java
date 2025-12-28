@@ -37,12 +37,19 @@ public class AuthServiceImpl implements AuthService {
         this.jwtUtil = jwtUtil;
     }
 
+    // ================= LOGIN =================
     @Override
     public AuthResponseDto login(AuthRequestDto request) {
 
+        if (request.getEmail() == null || request.getPassword() == null) {
+            throw new BadRequestException("Email and password are required");
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword())
+                        request.getEmail(),
+                        request.getPassword()
+                )
         );
 
         UserAccount user = userRepo.findByEmail(request.getEmail())
@@ -53,18 +60,35 @@ public class AuthServiceImpl implements AuthService {
         claims.put("email", user.getEmail());
 
         String token = jwtUtil.generateToken(claims, user.getEmail());
+
         return new AuthResponseDto(token);
     }
 
+    // ================= REGISTER =================
     @Override
     public void register(RegisterRequestDto request) {
+
+        // ✅ FIX 1: Email validation
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new BadRequestException("Email cannot be empty");
+        }
+
+        // ✅ FIX 2: Password validation (PREVENTS 500 ERROR)
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new BadRequestException("Password cannot be empty");
+        }
+
+        // ✅ FIX 3: Duplicate email check
         if (userRepo.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
 
+        // ✅ FIX 4: Create user safely
         UserAccount user = new UserAccount();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setActive(true); // IMPORTANT for login & authorization
+
         userRepo.save(user);
     }
 }
