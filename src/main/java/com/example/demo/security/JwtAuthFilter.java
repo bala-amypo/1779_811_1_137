@@ -44,8 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(email);
 
-                // ✅ FIX HERE
-                if (jwtUtil.isTokenValid(token, userDetails)) {
+                // ✅ CORRECT FOR YOUR JwtUtil
+                if (jwtUtil.isTokenValid(token, userDetails.getUsername())) {
 
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
@@ -59,7 +59,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     .buildDetails(request)
                     );
 
-                    // ✅ THIS LINE IS CORRECT AND IMPORTANT
                     SecurityContextHolder.getContext()
                             .setAuthentication(authToken);
                 }
