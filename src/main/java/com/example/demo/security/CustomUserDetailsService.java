@@ -15,6 +15,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserAccountRepository userRepo;
 
+    // ✅ DO NOT CHANGE THIS CONSTRUCTOR (tests depend on it)
     public CustomUserDetailsService(UserAccountRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -25,11 +26,20 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserAccount user = userRepo.findByEmail(email)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found"));
+                        new UsernameNotFoundException("User not found: " + email));
+
+        // ✅ IMPORTANT: password MUST be non-null & encoded
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new UsernameNotFoundException("User password not set");
+        }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),           // username = email
-                user.getPassword(),        // encoded password
+                user.getEmail(),
+                user.getPassword(),
+                user.isActive(),     // enabled
+                true,                // accountNonExpired
+                true,                // credentialsNonExpired
+                true,                // accountNonLocked
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
