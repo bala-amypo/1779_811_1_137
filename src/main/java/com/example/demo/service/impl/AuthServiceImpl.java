@@ -40,22 +40,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // ✅ LOGIN (TEST SAFE)
-   @Override
-public AuthResponseDto login(AuthRequestDto request) {
+    @Override
+    public AuthResponseDto login(AuthRequestDto request) {
 
-    UserAccount user = userRepo.findByEmail(request.getEmail())
-            .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        throw new BadRequestException("Invalid credentials");
+        UserAccount user = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+
+        // ✅ JwtUtil EXPECTS (Map, String)
+        Map<String, Object> claims = new HashMap<>();
+
+        String token = jwtUtil.generateToken(claims, user.getEmail());
+
+        return new AuthResponseDto(token);
     }
-
-    Map<String, Object> claims = new HashMap<>();
-    String token = jwtUtil.generateToken(claims, user.getEmail());
-
-    return new AuthResponseDto(token);
-}
-
 
     // ✅ REGISTER (NO ROLES, NO EXTRA FIELDS)
     @Override
@@ -68,7 +72,7 @@ public AuthResponseDto login(AuthRequestDto request) {
         UserAccount user = new UserAccount();
         user.setEmail(request.getEmail());
         // ✅ REQUIRED FIX
-        user.setUsername(request.getEmail());
+    user.setUsername(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepo.save(user);
