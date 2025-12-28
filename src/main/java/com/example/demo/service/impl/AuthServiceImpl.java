@@ -1,30 +1,29 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dto.AuthRequestDto;
+import com.example.demo.dto.AuthResponseDto;
+import com.example.demo.dto.RegisterRequestDto;
+import com.example.demo.entity.UserAccount;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserAccountRepository;
+import com.example.demo.security.JwtUtil;
+import com.example.demo.service.AuthService;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @Transactional
 public class AuthServiceImpl implements AuthService {
 
     private final UserAccountRepository userRepo;
-    private final RoleRepository roleRepo;
-    private final UserRoleRepository userRoleRepo;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    // ✅ Constructor used by Spring
-    public AuthServiceImpl(UserAccountRepository userRepo,
-                           RoleRepository roleRepo,
-                           UserRoleRepository userRoleRepo,
-                           PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager,
-                           JwtUtil jwtUtil) {
-        this.userRepo = userRepo;
-        this.roleRepo = roleRepo;
-        this.userRoleRepo = userRoleRepo;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-    }
-
-    // ✅ Constructor used by TEST CASES (DO NOT REMOVE)
     public AuthServiceImpl(UserAccountRepository userRepo,
                            PasswordEncoder passwordEncoder,
                            AuthenticationManager authenticationManager,
@@ -33,8 +32,6 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.roleRepo = null;
-        this.userRoleRepo = null;
     }
 
     @Override
@@ -47,17 +44,6 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepo.save(user);
-
-        // Only assign role if repos are available (runtime)
-        if (roleRepo != null && userRoleRepo != null) {
-            Role role = roleRepo.findByRoleName("USER")
-                    .orElseThrow(() -> new BadRequestException("USER role not found"));
-
-            UserRole userRole = new UserRole();
-            userRole.setUser(user);
-            userRole.setRole(role);
-            userRoleRepo.save(userRole);
-        }
     }
 
     @Override
