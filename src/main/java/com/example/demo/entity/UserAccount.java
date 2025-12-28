@@ -13,7 +13,7 @@ public class UserAccount {
 
     @Column(unique = true)
     private String email;
-    
+
     @Column(nullable = false, unique = true)
     private String username; 
 
@@ -35,7 +35,13 @@ public class UserAccount {
     public void preUpdate() {
         updatedAt = Instant.now();
     }
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
