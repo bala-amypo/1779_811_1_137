@@ -40,26 +40,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // ✅ LOGIN (TEST SAFE)
-    @Override
-    public AuthResponseDto login(AuthRequestDto request) {
+   @Override
+public AuthResponseDto login(AuthRequestDto request) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+    UserAccount user = userRepo.findByEmail(request.getEmail())
+            .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
-        UserAccount user = userRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
-
-        // ✅ JwtUtil EXPECTS (Map, String)
-        Map<String, Object> claims = new HashMap<>();
-
-        String token = jwtUtil.generateToken(claims, user.getEmail());
-
-        return new AuthResponseDto(token);
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        throw new BadRequestException("Invalid credentials");
     }
+
+    Map<String, Object> claims = new HashMap<>();
+    String token = jwtUtil.generateToken(claims, user.getEmail());
+
+    return new AuthResponseDto(token);
+}
+
 
     // ✅ REGISTER (NO ROLES, NO EXTRA FIELDS)
     @Override
