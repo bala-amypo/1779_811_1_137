@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.AuthRequestDto;
+import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.UserAccount;
@@ -8,13 +10,17 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.repository.UserRoleRepository;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.AuthService;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -24,19 +30,48 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepo;
     private final UserRoleRepository userRoleRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     public AuthServiceImpl(
             UserAccountRepository userRepo,
             RoleRepository roleRepo,
             UserRoleRepository userRoleRepo,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil
     ) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.userRoleRepo = userRoleRepo;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
+    // ✅ LOGIN (this was missing earlier)
+    @Override
+    public AuthResponseDto login(AuthRequestDto request) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        UserAccount user = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("email", user.getEmail());
+
+        String token = jwtUtil.generateToken(claims, user.getEmail());
+        return new AuthResponseDto(token);
+    }
+
+    // ✅ REGISTER (ENTITY-SAFE)
     @Override
     public void register(RegisterRequestDto request) {
 
@@ -48,21 +83,15 @@ public class AuthServiceImpl implements AuthService {
         UserAccount user = new UserAccount();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
         userRepo.save(user);
 
-        // 2. Fetch default role
+        // 2. Assign default USER role
         Role role = roleRepo.findByRoleName("USER")
                 .orElseThrow(() -> new RuntimeException("Default role USER not found"));
 
-        // 3. Assign role
         UserRole userRole = new UserRole();
         userRole.setUser(user);
         userRole.setRole(role);
-        userRole.setActive(true);
-        userRole.setAssignedAt(LocalDateTime.now());
 
         userRoleRepo.save(userRole);
     }
