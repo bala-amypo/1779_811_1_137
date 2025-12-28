@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-
+    
     public AuthServiceImpl(
             UserAccountRepository userRepo,
             PasswordEncoder passwordEncoder,
@@ -68,9 +68,11 @@ public class AuthServiceImpl implements AuthService {
         if (userRepo.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
-
+    
         UserAccount user = new UserAccount();
         user.setEmail(request.getEmail());
+        // ✅ REQUIRED FIX
+        user.setUsername(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepo.save(user);
