@@ -19,7 +19,6 @@ public class OpenApiConfig {
             .servers(List.of(
                 new Server().url("https://9368.pro604cr.amypo.ai/")
             ))
-            // 🔥 THIS IS WHAT YOU WERE MISSING
             .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
             .components(new Components()
                 .addSecuritySchemes("bearerAuth",
